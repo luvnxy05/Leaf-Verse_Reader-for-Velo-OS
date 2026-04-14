@@ -1,0 +1,375 @@
+<template>
+  <div class="container">
+    <!-- 书籍选择界面 -->
+    <div if="{{!currentBook}}" class="select-page">
+      <text class="header">选择书籍</text>
+      
+      <div class="book-list">
+        <div class="book-item" onclick="selectBook0">
+          <text class="book-name">{{books[0].name}}</text>
+          <text class="book-info">{{books[0].pages}}页 · {{books[0].size}}</text>
+        </div>
+        
+        <div class="book-item" onclick="selectBook1">
+          <text class="book-name">{{books[1].name}}</text>
+          <text class="book-info">{{books[1].pages}}页 · {{books[1].size}}</text>
+        </div>
+        
+        <div class="book-item" onclick="selectBook2">
+          <text class="book-name">{{books[2].name}}</text>
+          <text class="book-info">{{books[2].pages}}页 · {{books[2].size}}</text>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 阅读界面 -->
+    <div if="{{currentBook}}" class="read-page">
+      <text class="book-title">{{currentBook.name}}</text>
+      <text class="progress">{{current}}/{{total}}</text>
+      
+      <div class="content-box">
+        <text class="content">{{pageText}}</text>
+      </div>
+      
+      <!-- 美化后的按钮行 -->
+      <div class="btn-row">
+        <div class="btn-wrapper" onclick="prevPage">
+          <text class="btn-icon">◀</text>
+          <text class="btn-label">上页</text>
+        </div>
+        
+        <div class="btn-wrapper" onclick="backToList">
+          <text class="btn-icon">≡</text>
+          <text class="btn-label">目录</text>
+        </div>
+        
+        <div class="btn-wrapper" onclick="nextPage">
+          <text class="btn-icon">▶</text>
+          <text class="btn-label">下页</text>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  private: {
+    currentBook: null,
+    current: 1,
+    total: 0,
+    pageText: "",
+    books: [
+      {
+        name: "三体·第一章",
+        size: "约5KB",
+        pages: 6,
+        content: [
+          "三体\n刘慈欣\n\n第一部·疯狂年代\n\n中国，1967年。红色联合对四一四兵团总部大楼的攻击已持续了两天。",
+          "四一四兵团在大楼里建立了坚固的防御工事。他们在每层楼的窗户后都架设了机枪。",
+          "这场文化大革命中的武斗已经持续了很长时间。两个派系之间的仇恨越来越深。",
+          "在远处，一个穿着旧军装的老人正在看着这一切。他是叶哲泰，一个物理学家。",
+          "叶哲泰的女儿叶文洁站在他身边，她的眼中充满了恐惧和不解。",
+          "这就是《三体》故事的开端。一个关于宇宙、文明的史诗即将展开。"
+        ]
+      },
+      {
+        name: "小王子·节选",
+        size: "约3KB",
+        pages: 5,
+        content: [
+          "小王子\n\n安托万·德·圣-埃克苏佩里\n\n献给莱昂·维尔特",
+          "请孩子们原谅我把这本书献给了一个大人。这个大人是我在世界上最好的朋友。",
+          "我还有另一个理由：这个大人什么都能听懂。所有的大人曾经都是孩子。",
+          "小王子住在B612号小行星上。这颗行星比一座房子大不了多少。",
+          "他每天都要清理星球上的猴面包树苗，否则它们就会长满整个星球。"
+        ]
+      },
+      {
+        name: "编程入门",
+        size: "约4KB",
+        pages: 4,
+        content: [
+          "程序员的自我修养\n\n编程不仅仅是写代码，更是一种思维方式。",
+          "第一章：你好，世界\n\n每个程序员的旅程都从Hello World开始。",
+          "内存是程序运行的舞台。了解内存布局是写出高性能代码的基础。",
+          "调试是程序员最重要的技能之一。学会使用调试器将在关键时刻救你一命。"
+        ]
+      }
+    ]
+  },
+  selectBook0() { this.selectBookByIndex(0) },
+  selectBook1() { this.selectBookByIndex(1) },
+  selectBook2() { this.selectBookByIndex(2) },
+  selectBookByIndex(idx) {
+    this.currentBook = this.books[idx]
+    this.current = 1
+    this.total = this.currentBook.pages
+    this.updatePage()
+  },
+  backToList() {
+    this.currentBook = null
+    this.current = 1
+    this.pageText = ""
+  },
+  updatePage() {
+    if (this.currentBook) {
+      this.pageText = this.currentBook.content[this.current - 1]
+    }
+  },
+  prevPage() {
+    if (this.current > 1) {
+      this.current = this.current - 1
+      this.updatePage()
+    }
+  },
+  nextPage() {
+    if (this.current < this.total) {
+      this.current = this.current + 1
+      this.updatePage()
+    }
+  }
+}
+</script>
+
+<style>
+/* ========== 基础容器 ========== */
+.container {
+  flex-direction: column;
+  background-color: #1a1a1a;
+  width: 100%;
+  height: 100%;
+}
+
+/* ========== 矩形屏默认样式 ========== */
+.select-page {
+  flex-direction: column;
+  padding: 25px;
+  width: 100%;
+  height: 100%;
+}
+
+.header {
+  font-size: 22px;
+  color: #ffffff;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.book-list {
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.book-item {
+  flex-direction: column;
+  padding: 16px;
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.book-name {
+  font-size: 18px;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+.book-info {
+  font-size: 12px;
+  color: #888888;
+}
+
+/* 阅读页面 */
+.read-page {
+  flex-direction: column;
+  padding: 25px;
+  width: 100%;
+  height: 100%;
+}
+
+.book-title {
+  font-size: 18px;
+  color: #ffffff;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.progress {
+  font-size: 12px;
+  color: #888888;
+  margin-bottom: 12px;
+}
+
+.content-box {
+  flex: 1;
+  background-color: #2a2a2a;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 15px;
+}
+
+.content {
+  font-size: 15px;
+  color: #e0e0e0;
+  line-height: 22px;
+}
+
+/* 美化按钮 */
+.btn-row {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5px;
+}
+
+.btn-wrapper {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 25px;
+  background-color: #333333;
+  border-radius: 12px;
+}
+
+.btn-icon {
+  font-size: 18px;
+  color: #09ba07;
+  margin-bottom: 4px;
+}
+
+.btn-label {
+  font-size: 11px;
+  color: #09ba07;
+}
+
+/* ========== 圆形屏幕适配 ========== */
+@media screen and (shape: circle) {
+  .select-page {
+    padding: 65px 50px;
+  }
+  
+  .header {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+  
+  .book-item {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  
+  .book-name {
+    font-size: 14px;
+  }
+  
+  .book-info {
+    font-size: 11px;
+  }
+  
+  .read-page {
+    padding: 55px 45px 50px 45px;
+  }
+  
+  .book-title {
+    font-size: 15px;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  
+  .progress {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 11px;
+  }
+  
+  .content-box {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .content {
+    font-size: 12px;
+    line-height: 18px;
+  }
+  
+  .btn-wrapper {
+    padding: 12px 20px;
+    border-radius: 10px;
+  }
+  
+  .btn-icon {
+    font-size: 16px;
+  }
+  
+  .btn-label {
+    font-size: 10px;
+  }
+}
+
+/* ========== 胶囊屏适配 ========== */
+@media screen and (shape: pill-shaped) {
+  .select-page {
+    padding: 40px 20px;
+  }
+  
+  .header {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+  
+  .book-item {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  
+  .book-name {
+    font-size: 14px;
+  }
+  
+  .book-info {
+    font-size: 10px;
+  }
+  
+  .read-page {
+    padding: 35px 18px 45px 18px;
+  }
+  
+  .book-title {
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  
+  .progress {
+    font-size: 11px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .content-box {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .content {
+    font-size: 12px;
+    line-height: 18px;
+  }
+  
+  .btn-wrapper {
+    padding: 12px 18px;
+    border-radius: 10px;
+  }
+  
+  .btn-icon {
+    font-size: 15px;
+  }
+  
+  .btn-label {
+    font-size: 9px;
+  }
+}
+</style>
